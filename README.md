@@ -1,4 +1,4 @@
-# Magento 2 Plugin Visualisation
+# Magento 2 Plugin Visualization
 
 [![Code Climate](https://codeclimate.com/github/magento-hackathon/magento2-plugin-visualization/badges/gpa.svg)](https://codeclimate.com/github/magento-hackathon/magento2-plugin-visualization)
 
