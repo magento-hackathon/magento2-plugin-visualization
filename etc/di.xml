@@ -5,6 +5,7 @@
             <argument name="commands" xsi:type="array">
                 <item name="pluginListCommand" xsi:type="object">MagentoHackathon\PluginVisualization\Console\Command\ListCommand</item>
                 <item name="pluginListGraphviz" xsi:type="object">MagentoHackathon\PluginVisualization\Console\Command\GraphvizCommand</item>
+                <item name="pluginVisualizeCommand" xsi:type="object">MagentoHackathon\PluginVisualization\Console\Command\VisualizeCommand</item>
             </argument>
         </arguments>
     </type>

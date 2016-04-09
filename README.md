@@ -1,7 +1,5 @@
 # Magento 2 Plugin Visualization
 
-[![Code Climate](https://codeclimate.com/github/magento-hackathon/magento2-plugin-visualization/badges/gpa.svg)](https://codeclimate.com/github/magento-hackathon/magento2-plugin-visualization)
-
 A tool to visualize which before/after/around methods of which modules will get executed in what order.
 
 ## Installation
@@ -20,3 +18,5 @@ A tool to visualize which before/after/around methods of which modules will get 
 ```
 composer require magento-hackaton/module-plugin-visualization:dev-master
 ```
+
+Original Hackathon Issue Discussion: [magento-hackathon/pre-imagine-2016/issues/20](https://github.com/magento-hackathon/pre-imagine-2016/issues/20)
