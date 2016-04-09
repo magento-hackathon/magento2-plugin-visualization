@@ -38,7 +38,7 @@ class ListCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $files = $this->configurationScanner->scan('di.xml');
-        $types = $this->pluginScanner->getAllClasses($files);
+        $types = $this->pluginScanner->getAllTypes($files);
         $rows = [];
         foreach ($types as $plugin) {
             $rows[] = [$plugin];
