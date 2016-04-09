@@ -4,12 +4,20 @@ namespace MagentoHackathon\PluginVisualization\Model\Scanner;
 
 class Plugin
 {
+    public function stripNamespacePrefix($className) 
+    {
+        return preg_replace('/^\\\\/', '', $className);
+    }
+    
     public function getAllClasses($files)
     {
         $classes = [];
         foreach ($files as $file) {
-            $classes += $this->scanFile($file);
+            $classes = array_merge($classes, $this->scanFile($file));
         }
+        $classes = array_map([$this, 'stripNamespacePrefix'], $classes);
+        sort($classes);
+        $classes = array_unique($classes);
         return $classes;
     }
 
