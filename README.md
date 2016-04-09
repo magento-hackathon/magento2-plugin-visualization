@@ -21,4 +21,4 @@ A tool to visualize which before/after/around methods of which modules will get 
 composer require magento-hackaton/module-plugin-visualization:dev-master
 ```
 
-Original Hackathon Issue Discussion: magento-hackathon/pre-imagine-2016/issues/20
+Original Hackathon Issue Discussion: [magento-hackathon/pre-imagine-2016/issues/20](https://github.com/magento-hackathon/pre-imagine-2016/issues/20)
