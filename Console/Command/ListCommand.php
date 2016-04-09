@@ -2,7 +2,7 @@
 
 namespace MagentoHackathon\PluginVisualization\Console\Command;
 
-use Magento\Framework\Module\ModuleListInterface;
+use Magento\Setup\Module\Di\Code\Scanner\ConfigurationScanner;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
@@ -10,12 +10,15 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ListCommand extends Command
 {
-    private $_moduleList;
+    /**
+     * @var ConfigurationScanner
+     */
+    private $configurationScanner;
 
     public function __construct(
-        ModuleListInterface $moduleList
+        ConfigurationScanner $configurationScanner
     ) {
-        $this->_moduleList = $moduleList;
+        $this->configurationScanner = $configurationScanner;
         parent::__construct();
     }
 
@@ -27,15 +30,14 @@ class ListCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $plugins = $this->_moduleList->getAll();
+        $files = $this->configurationScanner->scan('di.xml');
         $rows = [];
-        foreach ($plugins as $plugin) {
-            $rows[$plugin['name']] = [$plugin['name'], $plugin['setup_version']];
+        foreach ($files as $plugin) {
+            $rows[] = [$plugin];
         }
-        ksort($rows);
         $tableHelper = new Table($output);
         $tableHelper
-            ->setHeaders(['Name', 'Setup Version'])
+            ->setHeaders(['di.xml files'])
             ->setRows($rows)
             ->render();
     }
