@@ -27,15 +27,15 @@ class ListCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $plugins = $this->_moduleList->getNames();
-        sort($plugins);
+        $plugins = $this->_moduleList->getAll();
         $rows = [];
         foreach ($plugins as $plugin) {
-            $rows[] = [$plugin];
+            $rows[$plugin['name']] = [$plugin['name'], $plugin['setup_version']];
         }
+        ksort($rows);
         $tableHelper = new Table($output);
         $tableHelper
-            ->setHeaders(['Name'])
+            ->setHeaders(['Name', 'Setup Version'])
             ->setRows($rows)
             ->render();
     }
