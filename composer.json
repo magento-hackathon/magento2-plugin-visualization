@@ -6,7 +6,7 @@
     },
     "autoload": {
         "psr-4": {
-            "MagentoHackaton\\PluginVisualization\\": ""
+            "MagentoHackathon\\PluginVisualization\\": ""
         },        
         "files": [
             "registration.php"
