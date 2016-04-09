@@ -1,0 +1,16 @@
+{
+    "name": "magento-hackaton/module-plugin-visualization",
+        "description": "Module for visualization plugins within Magento instance",
+    ],
+    "require": {
+        "magento/framework": "~100.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "MagentoHackaton\\PluginVisualization\\": ""
+        },        
+        "files": [
+            "registration.php"
+        ]
+    }    
+}
