@@ -90,11 +90,20 @@ class ListCommand extends Command
                     }
                     if (!empty($methodsFound)) {
                         foreach($methodsFound as $methodName => $plugins) {
-                            $methodNode = $areaNode->newNode($type . '::' . $methodName);
+                            $methodNode = $areaNode->newNode($type);
                             foreach($plugins as $plugin) {
-                                $pluginNode = $methodNode->newNode($plugin);
+                                //$pluginNode = $methodNode->newNode($plugin);
                                 if (isset($classes[$plugin])) {
-                                    $pluginNode->newNode($classes[$plugin]);
+                                    $reflection = new \ReflectionClass($classes[$plugin]);
+                                    $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
+                                    foreach ($methods as $method) {
+                                        foreach (['before', 'after', 'around'] as $prefix) {
+                                            if (strpos($method->name, $prefix) === 0) {
+                                                $methodNode->newNode($classes[$plugin] . '::' . $method->name);
+                                                break;
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
