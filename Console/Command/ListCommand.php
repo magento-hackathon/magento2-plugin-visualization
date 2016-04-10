@@ -20,12 +20,12 @@ class ListCommand extends AbstractCommand
         $rows = [];
         foreach ($types as $type => $plugins) {
             foreach ($plugins as $plugin) {
-                $rows[] = [$type, $plugin['plugin'], $plugin['sort_order']];
+                $rows[] = [$type, $plugin['plugin'], $plugin['sort_order'], $plugin['methods']];
             }
         }
         $tableHelper = new Table($output);
         $tableHelper
-            ->setHeaders(['Types', 'Plugin', 'Sort Order'])
+            ->setHeaders(['Types', 'Plugin', 'Sort Order', 'Methods'])
             ->setRows($rows)
             ->render();
     }
