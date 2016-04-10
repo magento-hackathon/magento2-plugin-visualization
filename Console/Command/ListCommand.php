@@ -29,24 +29,18 @@ class ListCommand extends Command
      * @var ObjectManagerInterface
      */
     private $objectManager;
-    /**
-     * @var Fetcher
-     */
-    private $fetcher;
 
     public function __construct(
         ConfigurationScanner $configurationScanner,
         Plugin $pluginScanner,
         PluginListInterface $pluginList,
-        ObjectManagerInterface $objectManager,
-        Fetcher $fetcher
+        ObjectManagerInterface $objectManager
     ) {
         $this->configurationScanner = $configurationScanner;
         $this->pluginScanner = $pluginScanner;
         $this->pluginList = $pluginList;
         $this->objectManager = $objectManager;
         parent::__construct();
-        $this->fetcher = $fetcher;
     }
 
     protected function configure()
