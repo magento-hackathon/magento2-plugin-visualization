@@ -10,7 +10,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Zend\Server\Reflection\ReflectionClass;
 
 class ListCommand extends Command
 {
@@ -30,18 +29,24 @@ class ListCommand extends Command
      * @var ObjectManagerInterface
      */
     private $objectManager;
+    /**
+     * @var Fetcher
+     */
+    private $fetcher;
 
     public function __construct(
         ConfigurationScanner $configurationScanner,
         Plugin $pluginScanner,
         PluginListInterface $pluginList,
-        ObjectManagerInterface $objectManager
+        ObjectManagerInterface $objectManager,
+        Fetcher $fetcher
     ) {
         $this->configurationScanner = $configurationScanner;
         $this->pluginScanner = $pluginScanner;
         $this->pluginList = $pluginList;
         $this->objectManager = $objectManager;
         parent::__construct();
+        $this->fetcher = $fetcher;
     }
 
     protected function configure()
@@ -58,23 +63,36 @@ class ListCommand extends Command
         foreach ($types as $type) {
             try {
                 $proxy = $this->objectManager->get($type . '\\Proxy');
-                echo get_class($proxy) . "\n";
                 $reflection = new \ReflectionClass($proxy);
-                $methods = $reflection->getMethods();
+                $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
                 foreach ($methods as $method) {
-                    var_dump($this->pluginList->getPlugin($type, $method->name));
+                    $methodName = $method->name;
+                    $plugin = $this->pluginList->getNext($type, $methodName);
+                    $plugins = [];
+                    if (!empty($plugin)) {
+                        foreach ($plugin as $plug) {
+                            if (is_array($plug)) {
+                                foreach ($plug as $something) {
+                                    $plugins[] = $something;
+                                }
+                            } else {
+                                $plugins[] = $plug;
+                            }
+                        }
+                        $rows[] = [
+                            $type,
+                            $methodName,
+                            implode(', ', $plugins)
+                        ];
+                    }
                 }
-                $rows[] = [$type];
             } catch (\Exception $e) {
-                echo $type;
-                echo "\t";
-                echo $e->getMessage();
-                echo "\n";
+                $output->writeln("Cannot analyze $type");
             }
         }
         $tableHelper = new Table($output);
         $tableHelper
-            ->setHeaders(['Types'])
+            ->setHeaders(['Type', 'Method', 'Plugins'])
             ->setRows($rows)
             ->render();
     }
