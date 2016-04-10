@@ -67,8 +67,7 @@ class ListCommand extends Command
             $areaNode = $this->tree->newNode($area);
             foreach ($types as $type => $classes) {
                 try {
-                    $proxy = $this->objectManager->get($type . '\\Proxy');
-                    $reflection = new \ReflectionClass($proxy);
+                    $reflection = new \ReflectionClass($type);
                     $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
                     $methodsFound = [];
                     foreach ($methods as $method) {
