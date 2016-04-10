@@ -27,6 +27,12 @@ class Plugin
         $results = $xpath->query('//plugin/..');
         foreach ($results as $result) {
             $class = $this->trimInstanceStartingBackslash($result->getAttribute('name'));
+            $disabled = $result->getAttribute('disabled');
+
+            if(isset($disabled) && $disabled=="false") {
+                continue;
+            }
+            
             if (!isset($types[$class])) {
                 $types[$class] = [];
             }
