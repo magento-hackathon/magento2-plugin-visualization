@@ -13,11 +13,8 @@ class Plugin
     {
         $classes = [];
         foreach ($files as $file) {
-            $classes = array_merge($classes, $this->scanFile($file));
+            $classes = array_merge_recursive($classes, $this->scanFile($file));
         }
-        $classes = array_map([$this, 'trimInstanceStartingBackslash'], $classes);
-        sort($classes);
-        $classes = array_unique($classes);
         return $classes;
     }
 
@@ -29,7 +26,19 @@ class Plugin
         $xpath = new \DOMXPath($dom);
         $results = $xpath->query('//plugin/..');
         foreach ($results as $result) {
-            $types[] = $result->getAttribute('name');
+            $class = $this->trimInstanceStartingBackslash($result->getAttribute('name'));
+            if (!isset($types[$class])) {
+                $types[$class] = [];
+            }
+            foreach ($result->childNodes as $plugin) {
+                if (!($plugin instanceof \DOMElement) || $plugin->tagName !== 'plugin') {
+                    continue;
+                }
+                $types[$class][] = [
+                    'plugin' => $plugin->getAttribute('type'),
+                    'sort_order' => $plugin->getAttribute('sortOrder'),
+                ];
+            }
         }
         return $types;
     }

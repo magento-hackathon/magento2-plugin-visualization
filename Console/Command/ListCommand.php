@@ -18,12 +18,14 @@ class ListCommand extends AbstractCommand
     {
         $types = $this->getTypes();
         $rows = [];
-        foreach ($types as $plugin) {
-            $rows[] = [$plugin];
+        foreach ($types as $type => $plugins) {
+            foreach ($plugins as $plugin) {
+                $rows[] = [$type, $plugin['plugin'], $plugin['sort_order']];
+            }
         }
         $tableHelper = new Table($output);
         $tableHelper
-            ->setHeaders(['Types'])
+            ->setHeaders(['Types', 'Plugin', 'Sort Order'])
             ->setRows($rows)
             ->render();
     }
