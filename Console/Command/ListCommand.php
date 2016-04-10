@@ -66,8 +66,10 @@ class ListCommand extends Command
         $types = $this->pluginScanner->getAllTypes($files);
         foreach ($types as $type) {
             try {
-                $proxy = $this->objectManager->get($type . '\\Proxy');
-                $reflection = new \ReflectionClass($proxy);
+//                $proxy = $this->objectManager->get($type . '\\Proxy');
+//                $reflection = new \ReflectionClass($proxy);
+
+                $reflection = new \ReflectionClass($type);
                 $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
                 $methodsFound = [];
                 foreach ($methods as $method) {
