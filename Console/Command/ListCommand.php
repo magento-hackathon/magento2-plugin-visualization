@@ -50,55 +50,58 @@ class ListCommand extends Command
         parent::__construct();
     }
 
-    protected
-    function configure()
+    protected function configure()
     {
         $this->setName('dev:plugin:list')
             ->setDescription('List plugins');
     }
 
-    protected
-    function execute(
+    protected function execute(
         InputInterface $input,
         OutputInterface $output
     ) {
         $files = $this->configurationScanner->scan('di.xml');
-        $types = $this->pluginScanner->getAllTypes($files);
-        foreach ($types as $type) {
-            try {
-                $proxy = $this->objectManager->get($type . '\\Proxy');
-                $reflection = new \ReflectionClass($proxy);
-                $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
-                $methodsFound = [];
-                foreach ($methods as $method) {
-                    $methodName = $method->name;
-                    $plugin = $this->pluginList->getNext($type, $methodName);
-                    $plugins = [];
-                    if (!empty($plugin)) {
-                        foreach ($plugin as $plug) {
-                            if (is_array($plug)) {
-                                foreach ($plug as $something) {
-                                    $plugins[] = $something;
+        $typeList = $this->pluginScanner->getAllTypes($files);
+        $pluginList = [];
+        foreach ($typeList as $area => $types) {
+            $areaNode = $this->tree->newNode($area);
+            foreach ($types as $type => $classes) {
+                try {
+                    $proxy = $this->objectManager->get($type . '\\Proxy');
+                    $reflection = new \ReflectionClass($proxy);
+                    $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
+                    $methodsFound = [];
+                    foreach ($methods as $method) {
+                        $methodName = $method->name;
+                        $plugin = $this->pluginList->getNext($type, $methodName);
+                        $plugins = [];
+                        if (!empty($plugin)) {
+                            foreach ($plugin as $plug) {
+                                if (is_array($plug)) {
+                                    foreach ($plug as $something) {
+                                        $plugins[] = $something;
+                                    }
+                                } else {
+                                    $plugins[] = $plug;
                                 }
-                            } else {
-                                $plugins[] = $plug;
+                            }
+                            $methodsFound[$methodName] = $plugins;
+                        }
+                    }
+                    if (!empty($methodsFound)) {
+                        foreach($methodsFound as $methodName => $plugins) {
+                            $methodNode = $areaNode->newNode($type . '::' . $methodName);
+                            foreach($plugins as $plugin) {
+                                $pluginNode = $methodNode->newNode($plugin);
+                                if (isset($classes[$plugin])) {
+                                    $pluginNode->newNode($classes[$plugin]);
+                                }
                             }
                         }
-                        $methodsFound[$methodName] = $plugins;
                     }
+                } catch (\Exception $e) {
+                    $output->writeln("Cannot analyze $type");
                 }
-                if (!empty($methodsFound)) {
-                    $typeNode = $this->tree->newNode($type);
-                    foreach($methodsFound as $methodName => $plugins) {
-                        $methodNode = $typeNode->newNode($methodName);
-                        foreach($plugins as $plugin) {
-                            $methodNode->newNode($plugin);
-                            // TODO: add more data based on plugin name
-                        }
-                    }
-                }
-            } catch (\Exception $e) {
-                $output->writeln("Cannot analyze $type");
             }
         }
         $this->tree->printTree($output);
