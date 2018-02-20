@@ -2,6 +2,6 @@
 
 \Magento\Framework\Component\ComponentRegistrar::register(
     \Magento\Framework\Component\ComponentRegistrar::MODULE,
-    'MagentoHackaton_PluginVisualization',
+    'MagentoHackathon_PluginVisualization',
     __DIR__
 );
